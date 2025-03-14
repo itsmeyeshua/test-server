@@ -5,7 +5,7 @@ const app = express()
 app.use(express.json())
 
 const cors = require('cors')
-app.use(cors())''
+app.use(cors());
 //If you don’t want to use the cors library, you can manually set CORS headers:
 // app.use((req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', 'http://localhost:3001, https://your-frontend-domain.com');
@@ -42,7 +42,49 @@ app.use(cors())''
 
 const fs = require("fs");
 const json_path = path.join(__dirname, "data.json");
-let notes = require("./data.json");
+// let notes = require("./data.json");
+let notes = [
+    {
+      "id": 1,
+      "content": "HTML is easy",
+      "important": true
+    },
+    {
+      "id": 2,
+      "content": "Browser can execute only JavaScript",
+      "important": false
+    },
+    {
+      "id": 3,
+      "content": "GET and POST are the most important methods of HTTP protocol",
+      "important": true
+    },
+    {
+      "id": 4,
+      "content": "whatever happens, happens",
+      "important": true
+    },
+    {
+      "id": 5,
+      "content": "life is good",
+      "important": false
+    },
+    {
+      "id": 6,
+      "content": "a new note...",
+      "important": false
+    },
+    {
+      "id": 7,
+      "content": "life is not that good",
+      "important": false
+    },
+    {
+      "id": 8,
+      "content": "i'm not supposed to be here",
+      "important": true
+    }
+  ];
 console.log(notes);
 
 // let notes = [
@@ -92,10 +134,19 @@ app.post('/api/notes', (request, response) => {
     if (notes.find(el => el.id === note.id))
         return response.status(400).send("id already exists");
     let new_notes = [...notes, note];
-    fs.writeFileSync(json_path, JSON.stringify(new_notes, null, 2));
-    console.log(note)
+    notes = new_notes;
+    console.log(note);
     response.json(note)
 })
+// app.post('/api/notes', (request, response) => {
+//     const note = request.body;
+//     if (notes.find(el => el.id === note.id))
+//         return response.status(400).send("id already exists");
+//     let new_notes = [...notes, note];
+//     fs.writeFileSync(json_path, JSON.stringify(new_notes, null, 2));
+//     console.log(note)
+//     response.json(note)
+// })
 
 
 app.delete('/api/notes/:id', (req, res) => {
@@ -103,12 +154,22 @@ app.delete('/api/notes/:id', (req, res) => {
     const note = notes.find(note => note.id === id);
     if (note) {
         notes = notes.filter(note => note.id !== id);
-        fs.writeFileSync(json_path, JSON.stringify(notes, null, 2));
         res.status(204).end();
     }
     else
         res.status(404).end();
 })
+// app.delete('/api/notes/:id', (req, res) => {
+//     const id = req.params.id;
+//     const note = notes.find(note => note.id === id);
+//     if (note) {
+//         notes = notes.filter(note => note.id !== id);
+//         fs.writeFileSync(json_path, JSON.stringify(notes, null, 2));
+//         res.status(204).end();
+//     }
+//     else
+//         res.status(404).end();
+// })
 
 app.get('/redirect', (req, res) => {
     res.redirect('/');
