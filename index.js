@@ -1,14 +1,16 @@
 const express = require("express")
+const path = require('path');
 const app = express();
 const morgan = require("morgan")
 const cors = require('cors')
 app.use(cors());
+app.use(express.json());
+app.use(express.static('dist'));
 // app.use(morgan('tiny')); //Morgan is a logging middleware for Express.
 // Morgan logs after the response is sent, so it can access req.body even if express.json() is placed after it.
 // This is because Morgan hooks into the response's 'finish' event, allowing it to observe the final state of req.body.
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :req[Content-Length] - :response-time ms :body'));
-app.use(express.json());
 
 let persons = [
     { 
@@ -33,6 +35,9 @@ let persons = [
     }
 ]
 //get
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 app.get("/info", (req, res) => {
     const txt = `Phonebook has info for ${persons.length} people<br />${new Date()}`;
     res.send(txt);
